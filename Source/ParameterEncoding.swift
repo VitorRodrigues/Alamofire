@@ -96,10 +96,10 @@ public struct URLEncoding: ParameterEncoding {
     public enum ArrayEncoding {
         case brackets, noBrackets
 
-        func encode(key: String) -> String {
+        func encode(key: String, index: Int) -> String {
             switch self {
             case .brackets:
-                return "\(key)[]"
+                return "\(key)[\(index)]"
             case .noBrackets:
                 return key
             }
@@ -211,8 +211,8 @@ public struct URLEncoding: ParameterEncoding {
                 components += queryComponents(fromKey: "\(key)[\(nestedKey)]", value: value)
             }
         } else if let array = value as? [Any] {
-            for value in array {
-                components += queryComponents(fromKey: arrayEncoding.encode(key: key), value: value)
+            for (i, value) in array.enumerated() {
+                components += queryComponents(fromKey: arrayEncoding.encode(key: key, index: i), value: value)
             }
         } else if let value = value as? NSNumber {
             if value.isBool {
